@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sikka — चित्त या पट</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   GLOBAL RESET — Blogger ke styles override
+   ============================================ */
+#SIKKA_APP {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 2147483647 !important;
+  background: #0e0e18 !important;
+  overflow-y: auto !important;
+  font-family: 'Noto Sans Devanagari', sans-serif !important;
+  color: #e8e0cc !important;
+  -webkit-font-smoothing: antialiased;
+}
+#SIKKA_APP * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================
+   SCREENS
+   ============================================ */
+.SK_screen {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 28px 16px 60px;
+  background: #0e0e18;
+}
+.SK_screen.SK_on { display: flex; }
+
+/* ============================================
+   AUTH SCREEN
+   ============================================ */
+.SK_brand {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-top: 20px;
+}
+.SK_brand_title {
+  font-family: 'Cinzel', serif;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  background: linear-gradient(135deg, #c8960f, #f0d060, #c8960f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.SK_brand_sub {
+  font-size: 12px;
+  letter-spacing: 5px;
+  color: rgba(220,200,140,0.5);
+  margin-top: 6px;
+}
+.SK_card {
+  background: #161624;
+  border: 1px solid rgba(200,150,30,0.2);
+  border-radius: 16px;
+  padding: 26px 22px;
+  width: 100%;
+  max-width: 380px;
+}
+.SK_tabs {
+  display: flex;
+  background: #1e1e30;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 22px;
+}
+.SK_tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  color: rgba(220,200,140,0.5);
+  font-size: 13px;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.2s, color 0.2s;
+}
+.SK_tab.SK_on { background: #161624; color: #e8b820; }
+.SK_field { margin-bottom: 14px; }
+.SK_field label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: rgba(220,200,140,0.5);
+  margin-bottom: 7px;
+  text-transform: uppercase;
+}
+.SK_field input {
+  width: 100%;
+  background: #1e1e30;
+  border: 1px solid rgba(200,150,30,0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #e8e0cc;
+  font-size: 15px;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.SK_field input:focus { border-color: rgba(200,150,30,0.5); }
+.SK_field input::placeholder { color: rgba(200,180,100,0.25); }
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.SK_btn_gold {
+  width: 100%;
+  background: linear-gradient(160deg, #8a6208 0%, #e8b820 50%, #8a6208 100%);
+  color: #1a0e00;
+  border: none;
+  border-radius: 50px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(200,150,15,0.4);
+  transition: transform 0.15s, opacity 0.2s;
+}
+.SK_btn_gold:hover:not(:disabled) { transform: translateY(-2px); }
+.SK_btn_gold:disabled { opacity: 0.3; cursor: not-allowed; background: #444; box-shadow: none; color: #666; }
+.SK_btn_ghost {
+  background: transparent;
+  border: 1px solid rgba(200,150,30,0.2);
+  border-radius: 50px;
+  padding: 9px 18px;
+  color: rgba(220,200,140,0.5);
+  font-size: 12px;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.SK_btn_ghost:hover { border-color: rgba(200,150,30,0.5); color: #e8e0cc; }
+
+/* ============================================
+   GAME SCREEN
+   ============================================ */
+#SK_game_inner {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px 0;
+  gap: 12px;
+}
+/* Topbar */
+#SK_topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 2px;
+}
+#SK_logo {
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  letter-spacing: 5px;
+  background: linear-gradient(90deg, #c8960f, #e8b820);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+#SK_topbar_right { display: flex; align-items: center; gap: 9px; }
+#SK_bal_pill {
+  background: #1e1e30;
+  border: 1px solid rgba(200,150,30,0.2);
+  border-radius: 30px;
+  padding: 6px 14px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e8b820;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#SK_bal_pill .SK_lbl { font-size: 9px; color: rgba(220,200,140,0.5); letter-spacing: 2px; }
+#SK_menu_btn {
+  width: 34px; height: 34px;
+  background: #1e1e30;
+  border: 1px solid rgba(200,150,30,0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  color: #e8e0cc;
+  transition: border-color 0.2s;
+}
+#SK_menu_btn:hover { border-color: rgba(200,150,30,0.5); }
+
+/* Timer */
+#SK_timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 76px;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+#SK_timer.SK_on { opacity: 1; }
+#SK_t_num {
+  font-size: 17px;
+  font-weight: 700;
+  color: #e8b820;
+  text-align: center;
+  margin-top: -43px;
+  line-height: 44px;
+  font-family: 'Cinzel', serif;
+}
+#SK_t_lbl { font-size: 9px; color: rgba(220,200,140,0.5); letter-spacing: 4px; margin-top: 3px; }
+
+/* Game Row */
+#SK_game_row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+}
+
+/* Bet Panels */
+.SK_bet_panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 112px;
+  flex-shrink: 0;
+}
+.SK_amt_sel { position: relative; width: 100%; }
+.SK_amt_trig {
+  width: 100%;
+  background: #1e1e30;
+  border: 1px solid rgba(200,150,30,0.2);
+  border-radius: 10px;
+  padding: 8px 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s;
+}
+.SK_amt_trig:hover { border-color: rgba(200,150,30,0.4); }
+.SK_amt_trig.SK_on { border-color: #c8960f; border-radius: 10px 10px 0 0; }
+.SK_amt_trig .SK_val { font-size: 13px; font-weight: 700; color: #e8b820; font-family: 'Cinzel', serif; }
+.SK_amt_trig .SK_arr { font-size: 10px; color: rgba(220,200,140,0.5); transition: transform 0.25s; }
+.SK_amt_trig.SK_on .SK_arr { transform: rotate(180deg); }
+.SK_amt_drop {
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  background: #1e1e30;
+  border: 1px solid #c8960f;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.28s ease;
+  z-index: 100;
+}
+.SK_amt_drop.SK_on { max-height: 220px; }
+.SK_amt_opt {
+  padding: 9px 13px;
+  font-size: 13px;
+  color: rgba(220,200,140,0.5);
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(200,150,30,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.15s, color 0.15s;
+}
+.SK_amt_opt:last-child { border-bottom: none; }
+.SK_amt_opt:hover { background: rgba(200,150,15,0.12); color: #e8b820; }
+.SK_amt_opt.SK_on { color: #e8b820; background: rgba(200,150,15,0.1); }
+.SK_amt_opt.SK_on::after { content: '✓'; font-size: 11px; color: #c8960f; }
+
+/* Bet Buttons */
+.SK_bet_btn {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 4px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s, opacity 0.2s;
+}
+.SK_bet_btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  background: rgba(255,255,255,0.08);
+  pointer-events: none;
+}
+.SK_bet_btn:disabled { opacity: 0.3; cursor: not-allowed; }
+#SK_btn_chitt { background: linear-gradient(170deg,#1a5e2e,#28a84a); color: #d4ffde; box-shadow: 0 3px 14px rgba(30,120,60,0.3); }
+#SK_btn_chitt:hover:not(:disabled) { transform: translateY(-2px); }
+#SK_btn_chitt.SK_on { box-shadow: 0 0 0 2.5px #32d45c, 0 3px 14px rgba(30,120,60,0.3); }
+#SK_btn_pat { background: linear-gradient(170deg,#5e1a1a,#a82828); color: #ffd4d4; box-shadow: 0 3px 14px rgba(140,30,30,0.3); }
+#SK_btn_pat:hover:not(:disabled) { transform: translateY(-2px); }
+#SK_btn_pat.SK_on { box-shadow: 0 0 0 2.5px #d43232, 0 3px 14px rgba(140,30,30,0.3); }
+.SK_bhi { font-size: 15px; display: block; font-family: 'Noto Sans Devanagari', sans-serif; }
+.SK_ben { font-size: 9px; letter-spacing: 3px; opacity: 0.65; display: block; margin-top: 2px; }
+.SK_bet_status { font-size: 11px; color: rgba(220,200,140,0.5); text-align: center; min-height: 14px; font-family: 'Noto Sans Devanagari', sans-serif; }
+.SK_bet_status.SK_on { color: #e8b820; }
+
+/* Coin */
+#SK_stage { position: relative; width: 158px; height: 158px; flex-shrink: 0; perspective: 700px; }
+#SK_coin_wrap { position: absolute; inset: 0; transform-style: preserve-3d; }
+.SK_face {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+.SK_heads {
+  background: radial-gradient(circle at 38% 32%, #f2f0e8 0%, #dedad0 25%, #c0bc9a 52%, #a09a78 76%, #786c4a 100%);
+  box-shadow: inset -5px -7px 18px rgba(0,0,0,0.48), inset 5px 5px 14px rgba(255,255,240,0.42), 0 8px 32px rgba(0,0,0,0.7);
+}
+.SK_tails {
+  background: radial-gradient(circle at 62% 38%, #eeecea 0%, #d4d0b8 25%, #b8b498 52%, #989270 76%, #706450 100%);
+  box-shadow: inset 5px -5px 18px rgba(0,0,0,0.44), inset -4px 5px 14px rgba(255,255,240,0.38), 0 8px 32px rgba(0,0,0,0.7);
+  transform: rotateX(180deg);
+}
+.SK_face::before { content: ''; position: absolute; inset: 5px; border-radius: 50%; border: 1.5px solid rgba(160,150,100,0.4); }
+.SK_face::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(135deg, rgba(255,255,240,0.26) 0%, transparent 45%, rgba(0,0,0,0.06) 100%); pointer-events: none; }
+#SK_coin_shadow { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); width: 118px; height: 12px; background: radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%); border-radius: 50%; }
+
+/* Result */
+#SK_result_area { width: 100%; text-align: center; min-height: 50px; }
+#SK_res_txt { font-size: 18px; font-weight: 700; color: #e8b820; opacity: 0; transform: translateY(8px); transition: opacity 0.5s, transform 0.5s; font-family: 'Noto Sans Devanagari', sans-serif; }
+#SK_res_sub { font-size: 13px; opacity: 0; margin-top: 4px; transition: opacity 0.5s 0.15s; font-family: 'Noto Sans Devanagari', sans-serif; }
+#SK_result_area.SK_on #SK_res_txt,
+#SK_result_area.SK_on #SK_res_sub { opacity: 1; transform: translateY(0); }
+#SK_result_area.SK_win #SK_res_sub { color: #42d46a; }
+#SK_result_area.SK_lose #SK_res_sub { color: #d44242; }
+
+#SK_hint { font-size: 11px; color: rgba(220,200,140,0.5); letter-spacing: 1px; text-align: center; min-height: 16px; font-family: 'Noto Sans Devanagari', sans-serif; }
+
+/* Live bar */
+#SK_live_bar { display: flex; align-items: center; gap: 7px; font-size: 12px; color: rgba(220,200,140,0.5); margin-top: 4px; font-family: 'Noto Sans Devanagari', sans-serif; }
+#SK_live_dot { width: 8px; height: 8px; border-radius: 50%; background: #42d46a; flex-shrink: 0; animation: SK_pulse 1.8s ease infinite; }
+@keyframes SK_pulse {
+  0% { box-shadow: 0 0 0 0 rgba(66,212,106,0.55); }
+  70% { box-shadow: 0 0 0 7px rgba(66,212,106,0); }
+  100% { box-shadow: 0 0 0 0 rgba(66,212,106,0); }
+}
+
+/* Leaderboard */
+#SK_leaderboard { width: 100%; max-width: 360px; background: #161624; border: 1px solid rgba(200,150,30,0.2); border-radius: 14px; overflow: hidden; margin-top: 4px; }
+#SK_lb_title { font-size: 11px; letter-spacing: 3px; color: rgba(220,200,140,0.5); text-transform: uppercase; padding: 11px 16px 10px; border-bottom: 1px solid rgba(200,150,30,0.18); text-align: center; font-family: 'Noto Sans Devanagari', sans-serif; }
+.SK_lb_row { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid rgba(200,150,30,0.06); }
+.SK_lb_row:last-child { border-bottom: none; }
+.SK_lb_row.SK_me { background: rgba(200,150,15,0.08); }
+.SK_lb_rank { font-size: 13px; font-weight: 700; font-family: 'Cinzel', serif; min-width: 22px; text-align: center; }
+.SK_lb_av { width: 29px; height: 29px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; font-family: 'Cinzel', serif; }
+.SK_lb_info { flex: 1; min-width: 0; }
+.SK_lb_name { font-size: 13px; font-weight: 600; color: #e8e0cc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Noto Sans Devanagari', sans-serif; }
+.SK_lb_sub { font-size: 10px; color: rgba(220,200,140,0.5); margin-top: 1px; font-family: 'Noto Sans Devanagari', sans-serif; }
+.SK_lb_amt { font-size: 13px; font-weight: 700; font-family: 'Cinzel', serif; color: #42d46a; white-space: nowrap; }
+.SK_lb_empty { text-align: center; padding: 18px; font-size: 12px; color: rgba(220,200,140,0.5); font-family: 'Noto Sans Devanagari', sans-serif; }
+
+/* ============================================
+   WALLET SCREEN
+   ============================================ */
+#SK_wallet_inner { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 14px; }
+.SK_w_bal { text-align: center; margin: 6px 0 18px; }
+.SK_w_bal .SK_wlbl { font-size: 11px; letter-spacing: 3px; color: rgba(220,200,140,0.5); text-transform: uppercase; margin-bottom: 6px; font-family: 'Noto Sans Devanagari', sans-serif; }
+.SK_w_bal .SK_wamt { font-size: 40px; font-weight: 700; font-family: 'Cinzel', serif; background: linear-gradient(135deg, #c8960f, #e8b820); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.SK_qa_grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 12px; }
+.SK_qa { background: #1e1e30; border: 1px solid rgba(200,150,30,0.2); border-radius: 10px; padding: 9px 4px; text-align: center; font-size: 13px; font-family: 'Cinzel', serif; font-weight: 600; color: rgba(220,200,140,0.5); cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+.SK_qa.SK_on { border-color: #c8960f; color: #e8b820; background: rgba(200,150,15,0.1); }
+.SK_upi_box { background: #1e1e30; border: 1px solid rgba(200,150,30,0.2); border-radius: 12px; padding: 14px; margin-bottom: 12px; text-align: center; }
+.SK_upi_id { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 600; color: #e8b820; letter-spacing: 1px; margin-bottom: 3px; }
+.SK_upi_lbl { font-size: 10px; color: rgba(220,200,140,0.5); letter-spacing: 2px; text-transform: uppercase; font-family: 'Noto Sans Devanagari', sans-serif; }
+.SK_upload { border: 2px dashed rgba(200,150,30,0.2); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; margin-bottom: 12px; position: relative; transition: border-color 0.2s; }
+.SK_upload:hover, .SK_upload.SK_has { border-color: #c8960f; }
+.SK_upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.SK_upload .SK_ico { font-size: 26px; margin-bottom: 8px; }
+.SK_upload .SK_utxt { font-size: 12px; color: rgba(220,200,140,0.5); font-family: 'Noto Sans Devanagari', sans-serif; }
+#SK_ocr_box { background: #1e1e30; border: 1px solid rgba(200,150,30,0.2); border-radius: 12px; padding: 13px; display: none; margin-bottom: 12px; }
+#SK_ocr_box.SK_on { display: block; }
+.SK_ocr_row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(200,150,30,0.07); font-size: 12px; }
+.SK_ocr_row:last-child { border-bottom: none; }
+.SK_ocr_row .SK_k { color: rgba(220,200,140,0.5); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+.SK_ocr_row .SK_v { color: #e8e0cc; font-weight: 600; font-family: 'Cinzel', serif; font-size: 11px; }
+#SK_ocr_status { text-align: center; font-size: 11px; padding: 7px; border-radius: 8px; margin-top: 7px; font-family: 'Noto Sans Devanagari', sans-serif; }
+
+/* ============================================
+   SIDE MENU
+   ============================================ */
+#SK_menu_overlay { display: none; position: fixed; inset: 0; z-index: 2147483646; background: rgba(0,0,0,0.7); }
+#SK_menu_overlay.SK_on { display: block; }
+#SK_menu_panel {
+  position: fixed;
+  top: 0; right: 0;
+  width: 260px;
+  height: 100vh;
+  background: #161624;
+  border-left: 1px solid rgba(200,150,30,0.2);
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+#SK_menu_overlay.SK_on #SK_menu_panel { transform: translateX(0); }
+.SK_menu_av { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg,#8a6208,#e8b820); display: flex; align-items: center; justify-content: center; font-size: 21px; font-weight: 700; color: #1a0e00; margin: 0 auto 9px; font-family: 'Cinzel', serif; }
+.SK_menu_name { font-size: 15px; font-weight: 700; color: #e8e0cc; margin-bottom: 2px; font-family: 'Noto Sans Devanagari', sans-serif; }
+.SK_menu_ph { font-size: 12px; color: rgba(220,200,140,0.5); letter-spacing: 1px; }
+.SK_menu_item { background: transparent; border: 1px solid rgba(200,150,30,0.2); border-radius: 10px; padding: 12px 14px; color: rgba(220,200,140,0.5); font-size: 13px; font-family: 'Noto Sans Devanagari', sans-serif; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 9px; width: 100%; transition: border-color 0.2s, color 0.2s; }
+.SK_menu_item:hover { border-color: rgba(200,150,30,0.5); color: #e8e0cc; }
+
+/* ============================================
+   PROCESSING OVERLAY
+   ============================================ */
+#SK_proc { display: none; position: fixed; inset: 0; z-index: 2147483645; background: rgba(14,14,24,0.92); flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+#SK_proc.SK_on { display: flex; }
+#SK_proc .SK_pm { font-size: 13px; color: rgba(220,200,140,0.5); letter-spacing: 2px; font-family: 'Noto Sans Devanagari', sans-serif; }
+.SK_spinner { width: 22px; height: 22px; border: 2px solid rgba(200,150,15,0.2); border-top-color: #e8b820; border-radius: 50%; animation: SK_spin 0.7s linear infinite; display: inline-block; }
+@keyframes SK_spin { to { transform: rotate(360deg); } }
+
+/* ============================================
+   TOAST
+   ============================================ */
+#SK_toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1e1e30; border: 1px solid rgba(200,150,30,0.5); border-radius: 30px; padding: 11px 24px; font-size: 13px; color: #e8e0cc; z-index: 2147483644; transition: transform 0.3s, opacity 0.3s; opacity: 0; white-space: nowrap; font-family: 'Noto Sans Devanagari', sans-serif; }
+#SK_toast.SK_on { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* Balance flash */
+@keyframes SK_flash_g { 0%,100%{color:#e8b820} 50%{color:#42d46a} }
+@keyframes SK_flash_r { 0%,100%{color:#e8b820} 50%{color:#d44242} }
+</style>
+</head>
+<body>
+
+<div id="SIKKA_APP">
+
+  <!-- ═══════════════════════════════
+       AUTH SCREEN
+  ═══════════════════════════════ -->
+  <div class="SK_screen SK_on" id="SK_auth">
+    <div class="SK_brand">
+      <div class="SK_brand_title">SIKKA</div>
+      <div class="SK_brand_sub">चित्त या पट</div>
+    </div>
+    <div class="SK_card">
+      <div class="SK_tabs">
+        <button class="SK_tab SK_on" onclick="SKstab('login')">लॉगिन</button>
+        <button class="SK_tab" onclick="SKstab('reg')">नया खाता</button>
+      </div>
+      <!-- Login -->
+      <div id="SK_f_login">
+        <div class="SK_field">
+          <label>मोबाइल नंबर</label>
+          <input type="tel" id="SK_lph" placeholder="10 अंक का नंबर" maxlength="10">
+        </div>
+        <button class="SK_btn_gold" onclick="SKdoLogin()">लॉगिन करें →</button>
+      </div>
+      <!-- Register -->
+      <div id="SK_f_reg" style="display:none;">
+        <div class="SK_field">
+          <label>आपका नाम</label>
+          <input type="text" id="SK_rname" placeholder="पूरा नाम">
+        </div>
+        <div class="SK_field">
+          <label>मोबाइल नंबर</label>
+          <input type="tel" id="SK_rph" placeholder="10 अंक का नंबर" maxlength="10">
+        </div>
+        <button class="SK_btn_gold" onclick="SKdoReg()">खाता बनाएं — ₹10 फ्री मिलेंगे →</button>
+      </div>
+      <p style="text-align:center;font-size:11px;color:rgba(220,200,140,0.5);margin-top:14px;line-height:1.8;">
+        नया खाता बनाने पर ₹10 मुफ्त मिलते हैं 🎁
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════
+       GAME SCREEN
+  ═══════════════════════════════ -->
+  <div class="SK_screen" id="SK_game">
+    <div id="SK_game_inner">
+
+      <!-- Topbar -->
+      <div id="SK_topbar">
+        <div id="SK_logo">SIKKA</div>
+        <div id="SK_topbar_right">
+          <div id="SK_bal_pill">
+            <span class="SK_lbl">BAL</span>
+            <span id="SK_bv">₹0</span>
+          </div>
+          <div id="SK_menu_btn" onclick="SKopenMenu()">☰</div>
+        </div>
+      </div>
+
+      <!-- Timer -->
+      <div id="SK_timer">
+        <svg width="56" height="56" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(200,150,40,0.1)" stroke-width="4"/>
+          <circle id="SK_t_ring" cx="32" cy="32" r="26" fill="none" stroke="#e8b820" stroke-width="4" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="0" transform="rotate(-90 32 32)" style="transition:stroke-dashoffset 1s linear;"/>
+        </svg>
+        <div id="SK_t_num">60</div>
+        <div id="SK_t_lbl">HAWA MEIN</div>
+      </div>
+
+      <!-- Game Row -->
+      <div id="SK_game_row">
+
+        <!-- CHITT -->
+        <div class="SK_bet_panel">
+          <div class="SK_amt_sel">
+            <div class="SK_amt_trig" id="SK_trig_c" onclick="SKtoggleDD('c')">
+              <span class="SK_val" id="SK_val_c">राशि</span>
+              <span class="SK_arr">▼</span>
+            </div>
+            <div class="SK_amt_drop" id="SK_drop_c">
+              <div class="SK_amt_opt" onclick="SKpickAmt('c',5)">₹5</div>
+              <div class="SK_amt_opt" onclick="SKpickAmt('c',10)">₹10</div>
+              <div class="SK_amt_opt" onclick="SKpickAmt('c',20)">₹20</div>
+              <div class="SK_amt_opt" onclick="SKpickAmt('c',50)">₹50</div>
+              <div class="SK_amt_opt" onclick="SKpickAmt('c',100)">₹100</div>
+            </div>
+          </div>
+          <button class="SK_bet_btn" id="SK_btn_chitt" onclick="SKplaceBet('c')" disabled>
+            <span class="SK_bhi">चित्त</span>
+            <span class="SK_ben">HEADS</span>
+          </button>
+          <div class="SK_bet_status" id="SK_bst_c">राशि चुनें</div>
+        </div>
+
+        <!-- COIN -->
+        <div id="SK_stage">
+          <div id="SK_coin_wrap">
+
+            <!-- HEADS — Lion Capital -->
+            <div class="SK_face SK_heads">
+              <svg viewBox="0 0 158 158" width="158" height="158">
+                <circle cx="79" cy="79" r="75" fill="none" stroke="#888070" stroke-width=".5" stroke-dasharray="2.2,1.8" opacity=".5"/>
+                <circle cx="79" cy="79" r="72" fill="none" stroke="#a09880" stroke-width="1.2" opacity=".4"/>
+                <rect x="46" y="113" width="66" height="6.5" rx="2" fill="#636050" opacity=".85"/>
+                <rect x="50" y="107" width="58" height="6.5" rx="2" fill="#6e6850" opacity=".82"/>
+                <ellipse cx="62" cy="110" rx="4.2" ry="2.8" fill="#524e3c" opacity=".68"/>
+                <ellipse cx="79" cy="110" rx="4.2" ry="2.8" fill="#524e3c" opacity=".68"/>
+                <ellipse cx="96" cy="110" rx="4.2" ry="2.8" fill="#524e3c" opacity=".68"/>
+                <ellipse cx="79" cy="104" rx="21" ry="4.2" fill="#787060" opacity=".5"/>
+                <path d="M59 104 Q61.5 98 64 104" fill="#686055" opacity=".48"/><path d="M64 104 Q66.5 98 69 104" fill="#686055" opacity=".48"/><path d="M69 104 Q71.5 98 74 104" fill="#686055" opacity=".48"/><path d="M74 104 Q76.5 98 79 104" fill="#686055" opacity=".48"/><path d="M79 104 Q81.5 98 84 104" fill="#686055" opacity=".48"/><path d="M84 104 Q86.5 98 89 104" fill="#686055" opacity=".48"/><path d="M89 104 Q91.5 98 94 104" fill="#686055" opacity=".48"/><path d="M94 104 Q96.5 98 99 104" fill="#686055" opacity=".48"/>
+                <g opacity=".78">
+                  <ellipse cx="56" cy="88" rx="12.5" ry="9.2" fill="#747060"/>
+                  <circle cx="48" cy="79" r="8.8" fill="#747060"/>
+                  <circle cx="48" cy="79" r="11.2" fill="none" stroke="#646055" stroke-width="2.8" opacity=".52"/>
+                  <ellipse cx="45.5" cy="77.5" rx="1.5" ry="1.7" fill="#383424" opacity=".88"/>
+                  <ellipse cx="50.5" cy="77.5" rx="1.5" ry="1.7" fill="#383424" opacity=".88"/>
+                  <path d="M44.5 83 Q48 86 51.5 83" fill="none" stroke="#525040" stroke-width="1" opacity=".75"/>
+                  <ellipse cx="43" cy="97" rx="5.2" ry="2.8" fill="#686055" opacity=".82"/>
+                  <ellipse cx="53" cy="97.5" rx="5.2" ry="2.8" fill="#686055" opacity=".82"/>
+                  <path d="M69 86 Q77 76 73 68" fill="none" stroke="#747060" stroke-width="3.3" stroke-linecap="round" opacity=".65"/>
+                  <circle cx="73" cy="66.5" r="3.3" fill="#747060" opacity=".55"/>
+                </g>
+                <g opacity=".78">
+                  <ellipse cx="102" cy="88" rx="12.5" ry="9.2" fill="#747060"/>
+                  <circle cx="110" cy="79" r="8.8" fill="#747060"/>
+                  <circle cx="110" cy="79" r="11.2" fill="none" stroke="#646055" stroke-width="2.8" opacity=".52"/>
+                  <ellipse cx="107.5" cy="77.5" rx="1.5" ry="1.7" fill="#383424" opacity=".88"/>
+                  <ellipse cx="112.5" cy="77.5" rx="1.5" ry="1.7" fill="#383424" opacity=".88"/>
+                  <path d="M106.5 83 Q110 86 113.5 83" fill="none" stroke="#525040" stroke-width="1" opacity=".75"/>
+                  <ellipse cx="105" cy="97" rx="5.2" ry="2.8" fill="#686055" opacity=".82"/>
+                  <ellipse cx="115" cy="97.5" rx="5.2" ry="2.8" fill="#686055" opacity=".82"/>
+                  <path d="M89 86 Q81 76 85 68" fill="none" stroke="#747060" stroke-width="3.3" stroke-linecap="round" opacity=".65"/>
+                  <circle cx="85" cy="66.5" r="3.3" fill="#747060" opacity=".55"/>
+                </g>
+                <g opacity=".95">
+                  <ellipse cx="79" cy="91" rx="15.5" ry="11.5" fill="#828070"/>
+                  <ellipse cx="79" cy="78.5" rx="7.8" ry="5.3" fill="#888475"/>
+                  <circle cx="79" cy="69.5" r="12.5" fill="#8a8470"/>
+                  <circle cx="79" cy="69.5" r="16" fill="none" stroke="#6e6450" stroke-width="5.2" opacity=".55"/>
+                  <ellipse cx="74" cy="67" rx="2.6" ry="3" fill="#1e1c10" opacity=".92"/>
+                  <ellipse cx="84" cy="67" rx="2.6" ry="3" fill="#1e1c10" opacity=".92"/>
+                  <ellipse cx="79" cy="72.5" rx="3.3" ry="2.1" fill="#606050" opacity=".82"/>
+                  <path d="M74.5 75.5 Q79 79 83.5 75.5" fill="none" stroke="#585040" stroke-width="1.3" stroke-linecap="round" opacity=".78"/>
+                  <ellipse cx="67.5" cy="101.5" rx="7.2" ry="4" fill="#787060" opacity=".88"/>
+                  <ellipse cx="90.5" cy="101.5" rx="7.2" ry="4" fill="#787060" opacity=".88"/>
+                </g>
+                <circle cx="79" cy="110" r="3.6" fill="none" stroke="#424030" stroke-width="1.2" opacity=".62"/>
+                <circle cx="79" cy="110" r="1.2" fill="#424030" opacity=".58"/>
+                <line x1="79" y1="106.4" x2="79" y2="113.6" stroke="#424030" stroke-width=".85" opacity=".58"/>
+                <line x1="75.4" y1="110" x2="82.6" y2="110" stroke="#424030" stroke-width=".85" opacity=".58"/>
+                <line x1="76.5" y1="107.5" x2="81.5" y2="112.5" stroke="#424030" stroke-width=".65" opacity=".58"/>
+                <line x1="81.5" y1="107.5" x2="76.5" y2="112.5" stroke="#424030" stroke-width=".65" opacity=".58"/>
+                <text x="79" y="130" text-anchor="middle" font-family="Noto Sans Devanagari,serif" font-size="6.5" font-weight="700" fill="#4a4535" opacity=".88">सत्यमेव जयते</text>
+                <text x="79" y="28" text-anchor="middle" font-family="Noto Sans Devanagari,serif" font-size="8" font-weight="700" fill="#5a5440" opacity=".84">भारत</text>
+                <text x="79" y="38" text-anchor="middle" font-family="Cinzel,serif" font-size="6.5" fill="#5a5440" opacity=".65">INDIA</text>
+                <text x="79" y="146" text-anchor="middle" font-family="Cinzel,serif" font-size="7" fill="#5a5440" opacity=".52">2024</text>
+                <circle cx="79" cy="79" r="76" fill="none" stroke="rgba(255,255,240,0.14)" stroke-width="1.8"/>
+              </svg>
+            </div>
+
+            <!-- TAILS — Wheat + ₹1 -->
+            <div class="SK_face SK_tails">
+              <svg viewBox="0 0 158 158" width="158" height="158">
+                <circle cx="79" cy="79" r="75" fill="none" stroke="#888070" stroke-width=".5" stroke-dasharray="2.2,1.8" opacity=".5"/>
+                <circle cx="79" cy="79" r="72" fill="none" stroke="#a09880" stroke-width="1.2" opacity=".4"/>
+                <g opacity=".86">
+                  <path d="M53 138 Q51 103 48 30" stroke="#7a7450" stroke-width="2" fill="none" stroke-linecap="round"/>
+                  <ellipse cx="43.5" cy="33" rx="4.3" ry="7.2" transform="rotate(-18 43.5 33)" fill="#8a8060"/>
+                  <ellipse cx="41" cy="44" rx="4" ry="6.8" transform="rotate(-20 41 44)" fill="#888060"/>
+                  <ellipse cx="39.5" cy="55" rx="3.8" ry="6.3" transform="rotate(-22 39.5 55)" fill="#868060"/>
+                  <ellipse cx="38.5" cy="65" rx="3.6" ry="5.9" transform="rotate(-22 38.5 65)" fill="#848060"/>
+                  <ellipse cx="38.5" cy="75" rx="3.4" ry="5.5" transform="rotate(-20 38.5 75)" fill="#828060"/>
+                  <ellipse cx="52" cy="37" rx="4.3" ry="7.2" transform="rotate(14 52 37)" fill="#8c8262"/>
+                  <ellipse cx="53" cy="48" rx="4" ry="6.8" transform="rotate(16 53 48)" fill="#8a8060"/>
+                  <ellipse cx="54" cy="59" rx="3.8" ry="6.3" transform="rotate(18 54 59)" fill="#888060"/>
+                  <ellipse cx="54.5" cy="69" rx="3.6" ry="5.9" transform="rotate(18 54.5 69)" fill="#868060"/>
+                  <line x1="42" y1="25" x2="38" y2="15" stroke="#7a7450" stroke-width=".85" stroke-linecap="round" opacity=".65"/>
+                  <line x1="46" y1="25" x2="45" y2="15" stroke="#7a7450" stroke-width=".7" stroke-linecap="round" opacity=".65"/>
+                  <line x1="51" y1="29" x2="50" y2="19" stroke="#7a7450" stroke-width=".85" stroke-linecap="round" opacity=".65"/>
+                  <path d="M51 109 Q37 101 31 87" fill="none" stroke="#6e6e48" stroke-width="1.7" stroke-linecap="round" opacity=".65"/>
+                  <path d="M52 119 Q62 107 60 96" fill="none" stroke="#6e6e48" stroke-width="1.4" stroke-linecap="round" opacity=".55"/>
+                </g>
+                <g opacity=".86">
+                  <path d="M105 138 Q107 103 110 30" stroke="#7a7450" stroke-width="2" fill="none" stroke-linecap="round"/>
+                  <ellipse cx="114.5" cy="33" rx="4.3" ry="7.2" transform="rotate(18 114.5 33)" fill="#8a8060"/>
+                  <ellipse cx="117" cy="44" rx="4" ry="6.8" transform="rotate(20 117 44)" fill="#888060"/>
+                  <ellipse cx="118.5" cy="55" rx="3.8" ry="6.3" transform="rotate(22 118.5 55)" fill="#868060"/>
+                  <ellipse cx="119.5" cy="65" rx="3.6" ry="5.9" transform="rotate(22 119.5 65)" fill="#848060"/>
+                  <ellipse cx="106" cy="37" rx="4.3" ry="7.2" transform="rotate(-14 106 37)" fill="#8c8262"/>
+                  <ellipse cx="105" cy="48" rx="4" ry="6.8" transform="rotate(-16 105 48)" fill="#8a8060"/>
+                  <ellipse cx="104" cy="59" rx="3.8" ry="6.3" transform="rotate(-18 104 59)" fill="#888060"/>
+                  <line x1="116" y1="25" x2="120" y2="15" stroke="#7a7450" stroke-width=".85" stroke-linecap="round" opacity=".65"/>
+                  <line x1="112" y1="25" x2="113" y2="15" stroke="#7a7450" stroke-width=".7" stroke-linecap="round" opacity=".65"/>
+                  <line x1="107" y1="29" x2="108" y2="19" stroke="#7a7450" stroke-width=".85" stroke-linecap="round" opacity=".65"/>
+                  <path d="M107 109 Q121 101 127 87" fill="none" stroke="#6e6e48" stroke-width="1.7" stroke-linecap="round" opacity=".65"/>
+                  <path d="M107 119 Q97 107 99 96" fill="none" stroke="#6e6e48" stroke-width="1.4" stroke-linecap="round" opacity=".55"/>
+                </g>
+                <path d="M53 138 Q79 127 105 138" fill="none" stroke="#7a7450" stroke-width="1.9" stroke-linecap="round" opacity=".55"/>
+                <text x="79" y="106" text-anchor="middle" font-family="Noto Sans Devanagari,Arial,sans-serif" font-size="48" font-weight="900" fill="#4c4838" opacity=".88">₹</text>
+                <text x="79" y="124" text-anchor="middle" font-family="Times New Roman,serif" font-size="15" font-weight="700" fill="#585040" opacity=".8">1</text>
+                <text x="79" y="28" text-anchor="middle" font-family="Noto Sans Devanagari,serif" font-size="8" font-weight="700" fill="#5a5440" opacity=".84">भारत</text>
+                <text x="79" y="38" text-anchor="middle" font-family="Cinzel,serif" font-size="6.5" fill="#5a5440" opacity=".65">INDIA</text>
+                <text x="79" y="146" text-anchor="middle" font-family="Cinzel,serif" font-size="7" fill="#5a5440" opacity=".52">2024</text>
+                <circle cx="79" cy="79" r="76" fill="none" stroke="rgba(255,255,240,0.14)" stroke-width="1.8"/>
+              </svg>
+            </div>
+
+          </div><!-- coin_wrap -->
+          <div id="SK_coin_shadow"></div>
+        </div><!-- stage -->
+
+        <!-- PAT -->
+        <div class="SK_bet_panel">
+          <div class="SK_amt_sel">
+            <div class="SK_amt_trig" id="SK_trig_p" onclick="SKtoggleDD('p')">
+              <span class="SK_val" id="SK_val_p">राशि</span>
+              <span class="SK_arr">▼</span>
+            </div>
+            <div class="SK_amt_drop" id="SK_drop_p">
+              <div class="SK_amt_opt" onclick="SKpickAmt('p',5)">₹5</div>
+              <div class="SK_amt_opt" onclick="SKpickAmt('p',10)">₹10</div>
+              <div class="SK_amt_opt" onclick="SKpickAmt('p',20)">₹20</div>
+              <div class="SK_amt_opt" onclick="SKpickAmt('p',50)">₹50</div>
+              <div class="SK_amt_opt" onclick="SKpickAmt('p',100)">₹100</div>
+            </div>
+          </div>
+          <button class="SK_bet_btn" id="SK_btn_pat" onclick="SKplaceBet('p')" disabled>
+            <span class="SK_bhi">पट</span>
+            <span class="SK_ben">TAILS</span>
+          </button>
+          <div class="SK_bet_status" id="SK_bst_p">राशि चुनें</div>
+        </div>
+
+      </div><!-- game_row -->
+
+      <!-- Result -->
+      <div id="SK_result_area">
+        <div id="SK_res_txt"></div>
+        <div id="SK_res_sub"></div>
+      </div>
+
+      <button class="SK_btn_gold" id="SK_btn_throw" onclick="SKthrow()" disabled style="max-width:230px;">
+        🪙 सिक्का उछालो
+      </button>
+
+      <div id="SK_hint">← चित्त या पट पर बेट लगाएं →</div>
+
+      <!-- Live counter -->
+      <div id="SK_live_bar">
+        <span id="SK_live_dot"></span>
+        <span id="SK_live_txt">— खिलाड़ी अभी ऑनलाइन</span>
+      </div>
+
+      <!-- Leaderboard -->
+      <div id="SK_leaderboard">
+        <div id="SK_lb_title">🏆 आज के टॉप खिलाड़ी</div>
+        <div id="SK_lb_body"></div>
+      </div>
+
+    </div><!-- game_inner -->
+
+    <!-- Side Menu -->
+    <div id="SK_menu_overlay" onclick="SKcloseMenu()">
+      <div id="SK_menu_panel" onclick="event.stopPropagation()">
+        <div style="text-align:center;padding-bottom:16px;border-bottom:1px solid rgba(200,150,30,0.2);margin-bottom:6px;">
+          <div class="SK_menu_av" id="SK_mav">?</div>
+          <div class="SK_menu_name" id="SK_mname">—</div>
+          <div class="SK_menu_ph" id="SK_mph">—</div>
+        </div>
+        <button class="SK_menu_item" onclick="SKcloseMenu();SKshowScreen('wallet')">💰 वॉलेट / पैसे जोड़ें</button>
+        <button class="SK_menu_item" onclick="SKcloseMenu();SKshowScreen('game')">🪙 खेलें</button>
+        <button class="SK_menu_item" onclick="SKcloseMenu();SKlogout()">🚪 लॉगआउट</button>
+      </div>
+    </div>
+
+  </div><!-- SK_game -->
+
+  <!-- ═══════════════════════════════
+       WALLET SCREEN
+  ═══════════════════════════════ -->
+  <div class="SK_screen" id="SK_wallet">
+    <div id="SK_wallet_inner">
+      <button class="SK_btn_ghost" onclick="SKshowScreen('game')" style="align-self:flex-start;margin-bottom:4px;">← वापस</button>
+      <div class="SK_w_bal">
+        <div class="SK_wlbl">वॉलेट बैलेंस</div>
+        <div class="SK_wamt" id="SK_wbal">₹0</div>
+      </div>
+      <div class="SK_card">
+        <div style="font-size:11px;color:rgba(220,200,140,0.5);letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:18px;">UPI से पैसे जोड़ें</div>
+        <div style="font-size:11px;color:rgba(220,200,140,0.5);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase;">राशि चुनें</div>
+        <div class="SK_qa_grid">
+          <div class="SK_qa" onclick="SKwamt(50)" id="SK_qa_50">₹50</div>
+          <div class="SK_qa" onclick="SKwamt(100)" id="SK_qa_100">₹100</div>
+          <div class="SK_qa" onclick="SKwamt(200)" id="SK_qa_200">₹200</div>
+          <div class="SK_qa" onclick="SKwamt(500)" id="SK_qa_500">₹500</div>
+        </div>
+        <div class="SK_field" style="margin-bottom:14px;">
+          <label>या खुद टाइप करें</label>
+          <input type="number" id="SK_wcust" placeholder="₹ राशि" min="10" max="5000" oninput="SKwcustom(this.value)">
+        </div>
+        <div class="SK_upi_box">
+          <div class="SK_upi_id" id="SK_upi_disp">yourname@upi</div>
+          <div class="SK_upi_lbl">इस UPI ID पर पेमेंट करें</div>
+        </div>
+        <div class="SK_upload" id="SK_upz" onclick="document.getElementById('SK_ssf').click()">
+          <input type="file" id="SK_ssf" accept="image/*" style="display:none;" onchange="SKhandleSS(this)">
+          <div class="SK_ico">📸</div>
+          <div class="SK_utxt" id="SK_utxt">पेमेंट का स्क्रीनशॉट अपलोड करें<br><span style="font-size:10px;opacity:0.6;">OCR से अपने आप पढ़ा जाएगा</span></div>
+        </div>
+        <div id="SK_ocr_box">
+          <div class="SK_ocr_row"><span class="SK_k">Transaction ID</span><span class="SK_v" id="SK_ocr_txn">—</span></div>
+          <div class="SK_ocr_row"><span class="SK_k">Amount</span><span class="SK_v" id="SK_ocr_amt">—</span></div>
+          <div class="SK_ocr_row"><span class="SK_k">From</span><span class="SK_v" id="SK_ocr_from">—</span></div>
+          <div class="SK_ocr_row"><span class="SK_k">Time</span><span class="SK_v" id="SK_ocr_time">—</span></div>
+          <div class="SK_ocr_row"><span class="SK_k">To (UPI)</span><span class="SK_v" id="SK_ocr_to">—</span></div>
+          <div id="SK_ocr_status"></div>
+        </div>
+        <button class="SK_btn_gold" id="SK_btn_pay" onclick="SKsubmitPay()" disabled style="margin-top:4px;">पेमेंट सबमिट करें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing -->
+  <div id="SK_proc">
+    <div class="SK_spinner"></div>
+    <div class="SK_pm" id="SK_proc_msg">लोड हो रहा है...</div>
+  </div>
+
+  <!-- Toast -->
+  <div id="SK_toast"></div>
+
+</div><!-- SIKKA_APP -->
+
+<script>
+(function() {
+'use strict';
+
+// ══════════════════════════════════════
+//  CONFIG — Yahan apna data daalo
+// ══════════════════════════════════════
+var SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE'; // Google Apps Script URL
+var UPI_ID     = 'yourname@upi';               // Apna UPI ID
+var DEMO_MODE  = true;                          // false karo jab backend ready ho
+
+// ══════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════
+var user        = null;
+var balance     = 0;
+var betPlaced   = null;  // 'c' | 'p' | null
+var betAmt      = 0;
+var selAmt      = { c: 0, p: 0 };
+var spinning    = false;
+var countInt    = null;
+var roundId     = null;
+var roundStart  = null;
+var wAmt        = 0;
+var ocrData     = null;
+var pSessions   = {};
+var _liveBase   = Math.floor(Math.random() * 11) + 8;
+var _liveTimer  = null;
+var _toastTimer = null;
+var _raf        = null;
+
+var $ = function(id) { return document.getElementById(id); };
+
+// ══════════════════════════════════════
+//  SCREEN ROUTER
+// ══════════════════════════════════════
+function SKshowScreen(name) {
+  document.querySelectorAll('#SIKKA_APP .SK_screen').forEach(function(s) {
+    s.classList.remove('SK_on');
+  });
+  var map = { auth: 'SK_auth', game: 'SK_game', wallet: 'SK_wallet' };
+  var el = $(map[name]);
+  if (el) el.classList.add('SK_on');
+  $('SIKKA_APP').scrollTop = 0;
+  if (name === 'wallet') $('SK_wbal').textContent = '₹' + balance;
+}
+window.SKshowScreen = SKshowScreen;
+
+// ══════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════
+function init() {
+  $('SK_upi_disp').textContent = UPI_ID;
+
+  // Body scroll lock
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+
+  var saved = localStorage.getItem('SIKKA_user');
+  if (saved) {
+    try {
+      user = JSON.parse(saved);
+      balance = user.balance || 0;
+      enterGame();
+    } catch(e) {
+      SKshowScreen('auth');
+    }
+  } else {
+    SKshowScreen('auth');
+  }
+
+  startLiveCounter();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+// ══════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════
+function SKstab(t) {
+  document.querySelectorAll('#SIKKA_APP .SK_tab').forEach(function(b, i) {
+    b.classList.toggle('SK_on', (i === 0 && t === 'login') || (i === 1 && t === 'reg'));
+  });
+  $('SK_f_login').style.display = t === 'login' ? 'block' : 'none';
+  $('SK_f_reg').style.display   = t === 'reg'   ? 'block' : 'none';
+}
+window.SKstab = SKstab;
+
+function SKdoLogin() {
+  var ph = $('SK_lph').value.trim();
+  if (ph.length !== 10) { SKtoast('10 अंक का नंबर डालें'); return; }
+  SKshowProc('लॉगिन हो रहा है...');
+  if (DEMO_MODE) {
+    var sv = localStorage.getItem('SIKKA_u_' + ph);
+    SKhideProc();
+    if (!sv) { SKtoast('नंबर नहीं मिला — नया खाता बनाएं'); SKstab('reg'); return; }
+    user = JSON.parse(sv);
+    balance = user.balance || 0;
+    localStorage.setItem('SIKKA_user', JSON.stringify(user));
+    enterGame();
+  } else {
+    SKapi({ action: 'getUser', phone: ph }, function(r) {
+      SKhideProc();
+      if (!r || !r.success) { SKtoast('नंबर नहीं मिला'); SKstab('reg'); return; }
+      user = r.user;
+      balance = user.balance || 0;
+      localStorage.setItem('SIKKA_user', JSON.stringify(user));
+      enterGame();
+    });
+  }
+}
+window.SKdoLogin = SKdoLogin;
+
+function SKdoReg() {
+  var nm = $('SK_rname').value.trim();
+  var ph = $('SK_rph').value.trim();
+  if (!nm) { SKtoast('नाम डालें'); return; }
+  if (ph.length !== 10) { SKtoast('10 अंक का नंबर डालें'); return; }
+  SKshowProc('खाता बन रहा है...');
+  if (DEMO_MODE) {
+    if (localStorage.getItem('SIKKA_u_' + ph)) {
+      SKhideProc(); SKtoast('नंबर पहले से है — लॉगिन करें'); SKstab('login'); return;
+    }
+    var uid = 'U' + Date.now();
+    user = { userId: uid, name: nm, phone: ph, balance: 10, joinDate: new Date().toISOString() };
+    localStorage.setItem('SIKKA_u_' + ph, JSON.stringify(user));
+    localStorage.setItem('SIKKA_user', JSON.stringify(user));
+    balance = 10;
+    SKhideProc();
+    SKtoast('🎉 स्वागत है! ₹10 आपके वॉलेट में');
+    enterGame();
+  } else {
+    SKapi({ action: 'createUser', name: nm, phone: ph }, function(r) {
+      SKhideProc();
+      if (!r || !r.success) { SKtoast(r.error || 'Error'); return; }
+      user = r.user;
+      balance = user.balance || 0;
+      localStorage.setItem('SIKKA_u_' + ph, JSON.stringify(user));
+      localStorage.setItem('SIKKA_user', JSON.stringify(user));
+      SKtoast('🎉 स्वागत है! ₹10 वॉलेट में');
+      enterGame();
+    });
+  }
+}
+window.SKdoReg = SKdoReg;
+
+function SKlogout() {
+  localStorage.removeItem('SIKKA_user');
+  user = null; balance = 0;
+  SKshowScreen('auth');
+}
+window.SKlogout = SKlogout;
+
+function enterGame() {
+  updateBalance();
+  $('SK_mav').textContent   = user.name.charAt(0).toUpperCase();
+  $('SK_mname').textContent = user.name;
+  $('SK_mph').textContent   = user.phone;
+  SKshowScreen('game');
+  renderLeaderboard();
+  setInterval(renderLeaderboard, 30000);
+}
+
+// ══════════════════════════════════════
+//  DROPDOWN
+// ══════════════════════════════════════
+function SKtoggleDD(s) {
+  if (spinning || betPlaced) return;
+  var t = $('SK_trig_' + s);
+  var d = $('SK_drop_' + s);
+  var open = d.classList.contains('SK_on');
+  ['c','p'].forEach(function(x) {
+    $('SK_drop_' + x).classList.remove('SK_on');
+    $('SK_trig_' + x).classList.remove('SK_on');
+  });
+  if (!open) { t.classList.add('SK_on'); d.classList.add('SK_on'); }
+}
+window.SKtoggleDD = SKtoggleDD;
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#SIKKA_APP .SK_amt_sel')) {
+    ['c','p'].forEach(function(x) {
+      var d = $('SK_drop_' + x); var t = $('SK_trig_' + x);
+      if (d) d.classList.remove('SK_on');
+      if (t) t.classList.remove('SK_on');
+    });
+  }
+});
+
+function SKpickAmt(s, a) {
+  if (spinning || betPlaced) return;
+  selAmt[s] = a;
+  $('SK_val_' + s).textContent = '₹' + a;
+  document.querySelectorAll('#SK_drop_' + s + ' .SK_amt_opt').forEach(function(el) {
+    el.classList.toggle('SK_on', el.textContent.trim() === '₹' + a);
+  });
+  $('SK_drop_' + s).classList.remove('SK_on');
+  $('SK_trig_' + s).classList.remove('SK_on');
+  $('SK_btn_' + (s === 'c' ? 'chitt' : 'pat')).disabled = false;
+  $('SK_bst_' + s).textContent = '₹' + a + ' तैयार';
+}
+window.SKpickAmt = SKpickAmt;
+
+// ══════════════════════════════════════
+//  BET
+// ══════════════════════════════════════
+function SKplaceBet(s) {
+  if (spinning) return;
+  var a = selAmt[s];
+  if (!a) { SKtoast('पहले राशि चुनें'); return; }
+  if (a > balance) { SKtoast('बैलेंस कम है! वॉलेट में पैसे जोड़ें'); return; }
+  var btnId = 'SK_btn_' + (s === 'c' ? 'chitt' : 'pat');
+  if (betPlaced === s) {
+    // Cancel
+    betPlaced = null; betAmt = 0;
+    $(btnId).classList.remove('SK_on');
+    $('SK_bst_' + s).textContent = '₹' + a + ' तैयार';
+    $('SK_btn_throw').disabled = true;
+    $('SK_hint').textContent = '← चित्त या पट पर बेट लगाएं →';
+    $('SK_hint').style.color = '';
+    return;
+  }
+  betPlaced = s; betAmt = a;
+  var os = s === 'c' ? 'p' : 'c';
+  var obId = 'SK_btn_' + (s === 'c' ? 'pat' : 'chitt');
+  $(btnId).classList.add('SK_on');
+  $(obId).disabled = true;
+  $(obId).style.opacity = '0.22';
+  $('SK_trig_' + os).style.opacity = '0.22';
+  $('SK_trig_' + os).style.pointerEvents = 'none';
+  $('SK_bst_' + s).textContent = '✓ ₹' + a + ' लगाई';
+  $('SK_bst_' + s).classList.add('SK_on');
+  $('SK_btn_throw').disabled = false;
+  $('SK_hint').textContent = '↑ अब सिक्का उछालो!';
+  $('SK_hint').style.color = '#e8b820';
+}
+window.SKplaceBet = SKplaceBet;
+
+function resetBet() {
+  betPlaced = null; betAmt = 0; selAmt = { c: 0, p: 0 };
+  ['c','p'].forEach(function(s) {
+    var bn = 'SK_btn_' + (s === 'c' ? 'chitt' : 'pat');
+    $(bn).classList.remove('SK_on');
+    $(bn).disabled = true;
+    $(bn).style.opacity = '';
+    $('SK_val_' + s).textContent = 'राशि';
+    $('SK_trig_' + s).style.opacity = '';
+    $('SK_trig_' + s).style.pointerEvents = '';
+    document.querySelectorAll('#SK_drop_' + s + ' .SK_amt_opt').forEach(function(el) {
+      el.classList.remove('SK_on');
+    });
+    $('SK_bst_' + s).textContent = 'राशि चुनें';
+    $('SK_bst_' + s).classList.remove('SK_on');
+  });
+  $('SK_btn_throw').disabled = true;
+  $('SK_hint').textContent = '← चित्त या पट पर बेट लगाएं →';
+  $('SK_hint').style.color = '';
+}
+
+// ══════════════════════════════════════
+//  HOUSE ENGINE
+// ══════════════════════════════════════
+function _ri(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+
+function getSession(uid) {
+  if (!pSessions[uid]) {
+    pSessions[uid] = {
+      rounds: [], phase: 'hook',
+      hk: 0, ht: _ri(1, 2),
+      tIn: 0, tOut: 0, mR: 0
+    };
+  }
+  return pSessions[uid];
+}
+
+function calcWinner(C, P, uid) {
+  C = Number(C) || 0;
+  P = Number(P) || 0;
+  uid = uid || 'guest';
+
+  // Multi-player: pool math
+  if (C > 0 && P > 0) {
+    var big = C >= P ? 'c' : 'p';
+    var small = C >= P ? 'p' : 'c';
+    var bp = Math.max(C, P);
+    var sp = Math.min(C, P);
+    return sp >= bp * 0.7 ? big : small;
+  }
+
+  // Single-player: psychology engine
+  var ps   = C > 0 ? 'c' : 'p';
+  var bet  = C > 0 ? C : P;
+  var sess = getSession(uid);
+  var hist = sess.rounds;
+  var n    = hist.length;
+  var l6   = hist.slice(-6);
+  var l6l  = l6.length - l6.filter(function(r) { return r.won; }).length;
+  var l3b  = hist.slice(-3).map(function(r) { return r.bet; });
+  var avg  = l3b.length ? l3b.reduce(function(a, b) { return a + b; }, 0) / l3b.length : bet;
+  var net  = sess.tIn - sess.tOut;
+  var win  = false;
+
+  if (sess.phase === 'hook') {
+    win = true;
+    sess.hk++;
+    if (sess.hk >= sess.ht) { sess.phase = 'milk'; sess.mR = 0; }
+  } else {
+    sess.mR++;
+    var bigBet = bet > avg * 1.25 && n >= 2;
+    var qRisk  = l6l >= 5;
+    var hDown  = net < -15;
+
+    if (qRisk)            win = Math.random() < 0.55;
+    else if (bigBet && !hDown) win = Math.random() < 0.10;
+    else if (hDown)       win = Math.random() < 0.15;
+    else                  win = Math.random() < 0.25;
+
+    if (sess.mR >= _ri(5, 7) && net > 0) {
+      sess.phase = 'hook'; sess.hk = 0; sess.ht = 1; sess.mR = 0;
+      win = true;
+    }
+  }
+  return win ? ps : (ps === 'c' ? 'p' : 'c');
+}
+
+function recordBet(uid, bet, won) {
+  var s = getSession(uid || 'guest');
+  s.rounds.push({ bet: bet, won: won, ts: Date.now() });
+  s.tIn  += bet;
+  s.tOut += won ? Math.round(bet * 1.7) : 0;
+}
+
+// ══════════════════════════════════════
+//  COIN ANIMATION
+// ══════════════════════════════════════
+function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+function easeIn(t)  { return t * t * t; }
+
+function SKthrow() {
+  if (spinning || !betPlaced) return;
+  spinning   = true;
+  roundId    = 'R' + Date.now();
+  roundStart = new Date().toISOString();
+
+  balance -= betAmt;
+  updateBalance();
+  $('SK_btn_throw').disabled = true;
+  $('SK_result_area').className = '';
+  $('SK_res_txt').textContent   = '';
+  $('SK_res_sub').textContent   = '';
+
+  var chT = betPlaced === 'c' ? betAmt : 0;
+  var paT = betPlaced === 'p' ? betAmt : 0;
+  var uid = user ? user.userId : 'guest';
+  var ws  = calcWinner(chT, paT, uid);
+  var isHeads = ws === 'c';
+
+  var cw = $('SK_coin_wrap');
+  cw.style.transition = 'none';
+  cw.style.transform  = '';
+  void cw.offsetWidth;
+
+  var RISE = 1100, FLOAT = 60000, FALL = 1500, PEAK = -185;
+  var phase = 'rise', phStart = null, angleX = 0, finalAngle = 0;
+
+  function startTimer() {
+    $('SK_timer').classList.add('SK_on');
+    $('SK_t_num').textContent = '60';
+    $('SK_t_ring').style.strokeDashoffset = '0';
+    var s = 60;
+    countInt = setInterval(function() {
+      s--;
+      if (s < 0) { clearInterval(countInt); return; }
+      $('SK_t_num').textContent = s;
+      $('SK_t_ring').style.strokeDashoffset = String(163 * (1 - s / 60));
+    }, 1000);
+  }
+
+  function applyTransform(y, rx, sc, so) {
+    cw.style.transform = 'translateY(' + y + 'px) rotateX(' + rx + 'deg)';
+    $('SK_coin_shadow').style.transform = 'translateX(-50%) scale(' + sc + ')';
+    $('SK_coin_shadow').style.opacity   = String(so);
+  }
+
+  function frame(ts) {
+    if (!phStart) phStart = ts;
+    var t = ts - phStart;
+
+    if (phase === 'rise') {
+      var p = Math.min(t / RISE, 1), ep = easeOut(p);
+      applyTransform(PEAK * ep, 720 * ep, 1 - ep * 0.85, ep < 0.5 ? 1 : 0.65 - ep * 0.4);
+      angleX = 720 * ep;
+      if (p >= 1) { phase = 'float'; phStart = ts; startTimer(); }
+    } else if (phase === 'float') {
+      var p = Math.min(t / FLOAT, 1), bob = Math.sin(t * 0.004) * 8;
+      angleX += 4.2;
+      applyTransform(PEAK + bob, angleX, 0.07, 0.04);
+      if (p >= 1) {
+        phase = 'fall'; phStart = ts;
+        clearInterval(countInt);
+        $('SK_timer').classList.remove('SK_on');
+        var mod  = ((angleX % 360) + 360) % 360;
+        var full = angleX - mod;
+        finalAngle = isHeads
+          ? (mod > 180 ? full + 720 : full + 360)
+          : (mod < 180 ? full + 180 : full + 540);
+      }
+    } else {
+      var p = Math.min(t / FALL, 1), ep = easeIn(p);
+      angleX += (finalAngle - angleX) * Math.min(ep * 0.12, 1);
+      applyTransform(PEAK * (1 - ep), angleX, ep * 0.85 + 0.15, 0.5 * ep);
+      if (p >= 1) {
+        cw.style.transform = 'translateY(0) rotateX(' + finalAngle + 'deg)';
+        doBounce();
+        return;
+      }
+    }
+    _raf = requestAnimationFrame(frame);
+  }
+
+  function doBounce() {
+    var steps = [{y:-17,d:112},{y:0,d:100},{y:-7,d:85},{y:0,d:75},{y:-3,d:62},{y:0,d:52}];
+    var i = 0;
+    function next() {
+      if (i >= steps.length) { onLand(); return; }
+      var st = steps[i++];
+      cw.style.transition = 'transform ' + st.d + 'ms ' + (i % 2 ? 'ease-out' : 'ease-in');
+      cw.style.transform  = 'translateY(' + st.y + 'px) rotateX(' + finalAngle + 'deg)';
+      setTimeout(next, st.d);
+    }
+    next();
+  }
+
+  function onLand() {
+    cw.style.transition = 'none';
+    cw.style.transform  = 'translateY(0) rotateX(' + finalAngle + 'deg)';
+
+    var won    = (isHeads && betPlaced === 'c') || (!isHeads && betPlaced === 'p');
+    var face   = isHeads ? 'चित्त (Heads)' : 'पट (Tails)';
+    var payout = won ? Math.round(betAmt * 1.7) : 0;
+
+    recordBet(uid, betAmt, won);
+
+    if (won) {
+      balance += payout;
+      updateBalance(true);
+      $('SK_res_txt').textContent = face;
+      $('SK_res_sub').textContent = '🎉 जीते! +₹' + (payout - betAmt) + ' फायदा (₹' + payout + ' मिले)';
+      $('SK_result_area').className = 'SK_on SK_win';
+    } else {
+      updateBalance(false);
+      $('SK_res_txt').textContent = face;
+      $('SK_res_sub').textContent = '💸 हारे! ₹' + betAmt + ' गया';
+      $('SK_result_area').className = 'SK_on SK_lose';
+    }
+
+    user.balance = balance;
+    localStorage.setItem('SIKKA_user', JSON.stringify(user));
+    if (user.phone) localStorage.setItem('SIKKA_u_' + user.phone, JSON.stringify(user));
+
+    if (!DEMO_MODE) {
+      SKapi({ action: 'settleRound', roundId: roundId, chittTotal: chT, patTotal: paT,
+        startTime: roundStart, bets: [{ userId: uid, betId: 'B' + Date.now(), side: betPlaced, amount: betAmt }]
+      }, function() {});
+    }
+
+    renderLeaderboard();
+    updateLiveCount();
+
+    if (balance <= 0) {
+      setTimeout(function() {
+        SKtoast('बैलेंस खत्म! वॉलेट में पैसे जोड़ें 💰');
+        SKshowScreen('wallet');
+      }, 1800);
+    }
+    spinning = false;
+    resetBet();
+  }
+
+  _raf = requestAnimationFrame(frame);
+}
+window.SKthrow = SKthrow;
+
+// ══════════════════════════════════════
+//  LIVE COUNTER
+// ══════════════════════════════════════
+function startLiveCounter() {
+  updateLiveCount();
+  _liveTimer = setInterval(function() {
+    _liveBase = Math.max(6, Math.min(28, _liveBase + Math.floor(Math.random() * 5) - 2));
+    updateLiveCount();
+  }, 7000);
+}
+
+function updateLiveCount() {
+  var k = 0;
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf('SIKKA_u_') === 0) k++;
+    }
+  } catch(e) {}
+  var el = $('SK_live_txt');
+  if (el) el.textContent = (k + _liveBase) + ' खिलाड़ी अभी ऑनलाइन';
+}
+
+// ══════════════════════════════════════
+//  LEADERBOARD
+// ══════════════════════════════════════
+var _avColors = ['#c8960f','#28a84a','#a82828','#1a6ea8','#9c28a8','#a86c1a'];
+function _avColor(n) {
+  var c = 0;
+  for (var i = 0; i < n.length; i++) c += n.charCodeAt(i);
+  return _avColors[c % _avColors.length];
+}
+
+function renderLeaderboard() {
+  if (DEMO_MODE) {
+    renderLBLocal();
+  } else {
+    SKapi({ action: 'getLeaderboard' }, function(r) {
+      if (r && r.success && r.leaderboard) renderLBData(r.leaderboard);
+      else renderLBLocal();
+    });
+  }
+}
+
+function renderLBLocal() {
+  var users = [];
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('SIKKA_u_') === 0) {
+        try {
+          var u = JSON.parse(localStorage.getItem(k));
+          if (u && u.name) users.push(u);
+        } catch(e) {}
+      }
+    }
+  } catch(e) {}
+  users.sort(function(a, b) { return (b.balance || 0) - (a.balance || 0); });
+  var data = users.map(function(u) {
+    var s = pSessions[u.userId] || { rounds: [] };
+    var w = s.rounds ? s.rounds.filter(function(r) { return r.won; }).length : 0;
+    return { name: u.name, balance: u.balance || 0, wins: w, isMe: user && u.userId === user.userId };
+  });
+  renderLBData(data);
+}
+
+function renderLBData(data) {
+  var body = $('SK_lb_body');
+  if (!body) return;
+  if (!data || data.length === 0) {
+    body.innerHTML = '<div class="SK_lb_empty">अभी कोई नहीं — पहले आप खेलें! 🎲</div>';
+    return;
+  }
+  var icons = ['🥇','🥈','🥉'];
+  var html = '';
+  data.slice(0, 8).forEach(function(entry, i) {
+    var rank  = i < 3 ? icons[i] : (i + 1);
+    var col   = _avColor(entry.name || '?');
+    var nm    = entry.isMe ? (entry.name + ' (आप)') : maskName(entry.name);
+    html += '<div class="SK_lb_row' + (entry.isMe ? ' SK_me' : '') + '">'
+      + '<div class="SK_lb_rank">' + rank + '</div>'
+      + '<div class="SK_lb_av" style="background:' + col + '22;color:' + col + '">'
+      +   (entry.name || '?').charAt(0).toUpperCase()
+      + '</div>'
+      + '<div class="SK_lb_info">'
+      +   '<div class="SK_lb_name">' + nm + '</div>'
+      +   '<div class="SK_lb_sub">' + (entry.wins || 0) + ' जीत</div>'
+      + '</div>'
+      + '<div class="SK_lb_amt">₹' + (entry.balance || 0) + '</div>'
+      + '</div>';
+  });
+  body.innerHTML = html;
+}
+
+function maskName(n) {
+  if (!n) return '???';
+  if (n.length <= 2) return n + '***';
+  return n.substring(0, 2) + '***';
+}
+
+// ══════════════════════════════════════
+//  WALLET
+// ══════════════════════════════════════
+function SKwamt(a) {
+  wAmt = a;
+  [50,100,200,500].forEach(function(v) {
+    var el = $('SK_qa_' + v);
+    if (el) el.classList.toggle('SK_on', v === a);
+  });
+  $('SK_wcust').value = '';
+  checkPayReady();
+}
+window.SKwamt = SKwamt;
+
+function SKwcustom(v) {
+  wAmt = Number(v) || 0;
+  [50,100,200,500].forEach(function(v2) {
+    var el = $('SK_qa_' + v2);
+    if (el) el.classList.remove('SK_on');
+  });
+  checkPayReady();
+}
+window.SKwcustom = SKwcustom;
+
+function checkPayReady() {
+  $('SK_btn_pay').disabled = !(wAmt >= 10 && ocrData);
+}
+
+function SKhandleSS(inp) {
+  var f = inp.files[0];
+  if (!f) return;
+  $('SK_upz').classList.add('SK_has');
+  $('SK_utxt').textContent = '📷 ' + f.name + ' — OCR पढ़ रहा है...';
+  SKshowProc('OCR से पढ़ रहा है...');
+  var reader = new FileReader();
+  reader.onload = function() {
+    fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: f.type, data: reader.result.split(',')[1] } },
+            { type: 'text', text: 'UPI screenshot. Only JSON, no other text:\n{"transactionId":"","amount":0,"from":"","to":"","time":""}' }
+          ]
+        }]
+      })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(d) {
+      var txt = (d.content && d.content[0] && d.content[0].text) || '{}';
+      try { ocrData = JSON.parse(txt.replace(/```json|```/g, '').trim()); }
+      catch(e) { ocrData = { transactionId: '', amount: 0, from: '', to: '', time: '' }; }
+      showOCRResult(ocrData);
+      SKhideProc();
+      checkPayReady();
+    })
+    .catch(function() { SKhideProc(); SKtoast('OCR Error — फिर कोशिश करें'); });
+  };
+  reader.readAsDataURL(f);
+}
+window.SKhandleSS = SKhandleSS;
+
+function showOCRResult(d) {
+  $('SK_ocr_txn').textContent  = d.transactionId || '—';
+  $('SK_ocr_amt').textContent  = d.amount ? '₹' + d.amount : '—';
+  $('SK_ocr_from').textContent = d.from || '—';
+  $('SK_ocr_time').textContent = d.time || '—';
+  $('SK_ocr_to').textContent   = d.to   || '—';
+  $('SK_ocr_box').classList.add('SK_on');
+
+  var upiOk = d.to && d.to.toLowerCase().indexOf(UPI_ID.toLowerCase().split('@')[0]) >= 0;
+  var stEl  = $('SK_ocr_status');
+  if (!upiOk) {
+    stEl.style.cssText = 'background:rgba(200,40,40,0.1);color:#d44242;';
+    stEl.textContent = '⚠️ UPI ID मेल नहीं खाता!';
+  } else if (!d.amount) {
+    stEl.style.cssText = 'background:rgba(220,160,20,0.1);color:#d4a017;';
+    stEl.textContent = '⚠️ Amount नहीं पढ़ा — फिर कोशिश करें';
+  } else {
+    stEl.style.cssText = 'background:rgba(40,180,80,0.1);color:#42d46a;';
+    stEl.textContent = '✓ पेमेंट verify हो गई';
+  }
+}
+
+function SKsubmitPay() {
+  if (!ocrData || wAmt < 10) return;
+  var now = new Date().toISOString();
+  SKshowProc('पेमेंट verify हो रही है...');
+
+  if (DEMO_MODE) {
+    var pTime = ocrData.time ? new Date(ocrData.time) : new Date();
+    var diff  = Math.abs((new Date(now) - pTime) / 1000);
+    var uOk   = ocrData.to && ocrData.to.toLowerCase().indexOf(UPI_ID.toLowerCase().split('@')[0]) >= 0;
+    var tOk   = diff <= 90;
+    SKhideProc();
+    if (uOk && tOk) {
+      balance += wAmt;
+      user.balance = balance;
+      localStorage.setItem('SIKKA_user', JSON.stringify(user));
+      if (user.phone) localStorage.setItem('SIKKA_u_' + user.phone, JSON.stringify(user));
+      updateBalance();
+      $('SK_wbal').textContent = '₹' + balance;
+      SKtoast('✅ ₹' + wAmt + ' वॉलेट में जोड़ दिए!');
+      ocrData = null;
+      $('SK_ocr_box').classList.remove('SK_on');
+      $('SK_upz').classList.remove('SK_has');
+      $('SK_btn_pay').disabled = true;
+    } else {
+      SKtoast('⏳ Review में: ' + (uOk ? 'Timing 90 sec exceed' : 'UPI ID mismatch'));
+    }
+  } else {
+    SKapi({ action: 'addPayment', userId: user.userId,
+      transactionId: ocrData.transactionId, amount: wAmt,
+      upiFrom: ocrData.from, upiTo: ocrData.to,
+      paymentTime: ocrData.time, submitTime: now
+    }, function(r) {
+      SKhideProc();
+      if (r && r.status === 'approved') {
+        balance = r.newBalance;
+        user.balance = balance;
+        localStorage.setItem('SIKKA_user', JSON.stringify(user));
+        if (user.phone) localStorage.setItem('SIKKA_u_' + user.phone, JSON.stringify(user));
+        updateBalance();
+        $('SK_wbal').textContent = '₹' + balance;
+        SKtoast('✅ ₹' + wAmt + ' वॉलेट में जोड़ दिए!');
+        ocrData = null;
+        $('SK_ocr_box').classList.remove('SK_on');
+        $('SK_btn_pay').disabled = true;
+      } else {
+        SKtoast('⏳ Review में: ' + (r && r.message ? r.message : ''));
+      }
+    });
+  }
+}
+window.SKsubmitPay = SKsubmitPay;
+
+// ══════════════════════════════════════
+//  MENU
+// ══════════════════════════════════════
+function SKopenMenu()  { $('SK_menu_overlay').classList.add('SK_on'); }
+function SKcloseMenu() { $('SK_menu_overlay').classList.remove('SK_on'); }
+window.SKopenMenu  = SKopenMenu;
+window.SKcloseMenu = SKcloseMenu;
+
+// ══════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════
+function updateBalance(won) {
+  $('SK_bv').textContent = '₹' + balance;
+  var el = $('SK_bv');
+  if (won === true) {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = 'SK_flash_g 1s ease';
+  } else if (won === false) {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = 'SK_flash_r 1s ease';
+  }
+}
+
+function SKshowProc(msg) {
+  $('SK_proc_msg').textContent = msg;
+  $('SK_proc').classList.add('SK_on');
+}
+function SKhideProc() { $('SK_proc').classList.remove('SK_on'); }
+
+function SKtoast(msg) {
+  var t = $('SK_toast');
+  t.textContent = msg;
+  t.classList.add('SK_on');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { t.classList.remove('SK_on'); }, 3200);
+}
+
+function SKapi(body, cb) {
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'text/plain' }
+  })
+  .then(function(r) { return r.json(); })
+  .then(cb)
+  .catch(function(e) { cb({ error: e.message }); });
+}
+
+})();
+</script>
+
+</body>
+</html>
